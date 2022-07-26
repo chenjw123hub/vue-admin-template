@@ -49,7 +49,7 @@ export const constantRoutes = [
     redirect: '/dashboard',
     children: [{
       path: 'dashboard',
-      name: 'Dashboard',
+      name: '首页',
       component: () => import('@/views/dashboard/index'),
       meta: { title: '首页', icon: 'dashboard' }
     }]
@@ -62,17 +62,17 @@ export const constantRoutes = [
       path: 'licenseInfoper',
       name: 'infoper',
       component: () => import('@/views/company/index'),
-      meta: { title: '授权', icon: 'link' }
+      meta: { title: '出厂注册', icon: 'link' }
     }]
   },
   {
-    path: '/company',
+    path: '/power',
     component: Layout,
-    redirect: '/company',
+    redirect: '/powerHis',
     children: [{
-      path: 'info',
-      name: 'info',
-      component: () => import('@/views/company/index'),
+      path: 'powerHis',
+      name: 'powerHis',
+      component: () => import('@/views/powerHis/index'),
       meta: { title: '授权记录', icon: 'link' }
     }]
   },

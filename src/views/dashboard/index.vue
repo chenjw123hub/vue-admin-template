@@ -1,6 +1,8 @@
 <template>
   <div class="dashboard-container">
     <div class="dashboard-text">LICENSE授权系统 欢迎您</div>
+    <img  style = "width:100%" src="https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif" class="user-avatar">
+
   </div>
 </template>
 

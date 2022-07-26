@@ -49,11 +49,14 @@ service.interceptors.response.use(
 
     // if the custom code is not 20000, it is judged as an error.
     if (res.code !== 20000) {
-      Message({
-        message: res.message || '错误提示',
-        type: 'error',
-        duration: 5 * 1000
-      })
+      if (1 === 1){
+        return res
+      }
+      // Message({
+      //   message: res.message || '错误提示',
+      //   type: 'error',
+      //   duration: 5 * 1000
+      // })
 
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
       if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
@@ -85,3 +88,11 @@ service.interceptors.response.use(
 )
 
 export default service
+// 通用下载方法
+export function download(url, params) {
+  return service.get(url, params, {
+    responseType: 'blob'
+  }).then(data => {}).catch((r) => {
+    Message.error(r)
+  })
+}
