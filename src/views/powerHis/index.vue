@@ -1,16 +1,18 @@
 <template>
   <div class="app-container">
-    <el-dialog style = "width: 80%;height:1000px"
+    <el-dialog  class="dialog1" style = "width: 80%;height:1000px"
                destroy-on-close
                title="待校验文件"
                :visible="powerStrShow"
                :before-close="() => powerStrShow=false"
     >
       <el-input  v-model="powerStr" type="textarea" style="height:500px"  height = "500px"></el-input>
-      <el-button @click = "clickPowerAuth()">确定</el-button>
-
+      <div class="btn">
+        <el-button  type="primary" @click = "clickPowerAuth()">确定</el-button>
+        <el-button @click="powerStrShow = false" >取消</el-button>
+      </div>
     </el-dialog>
-    <el-dialog style = "width: 500px"
+    <el-dialog class="dialog2"
       destroy-on-close
       :visible="previewShow"
       :before-close="() => previewShow=false">
@@ -19,11 +21,10 @@
           <el-date-picker  format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss"   v-model="authEndTime" type="datetime" placeholder="追加时间" style="width: 100%;" />
         </el-col>
       </el-row>
-      <el-row>
-        <el-col>
-          <el-button @click = "clickAuth()">确定</el-button>
-        </el-col>
-      </el-row>
+      <div class="btn">
+          <el-button type="primary" @click = "clickAuth()">确定</el-button>
+          <el-button   @click="previewShow = false">取消</el-button>
+      </div>
     </el-dialog>
     <el-table
       v-loading="listLoading"
@@ -80,24 +81,15 @@
         </el-table-column>
         <el-table-column label="操作"  align="center">
           <template slot-scope="scope">
-           <el-button-group>
-             <el-button size="small"  icon = "el-icon-download"
-                        @click="downFile(scope.row.id)"
-             >出厂文件</el-button>
-             <el-button size="small"
-                        @click="showDialogAuth(scope.row.id)"  icon = "el-icon-upload2"
-             >返厂授权</el-button>
-             <el-button size="small" icon = "el-icon-download"
-                        @click="downFileVer(scope.row.id)"
-             >校验文件</el-button>
-<!--             <el-button size="small"-->
-<!--               @click="showDialogAuth(scope.row.id)"-->
-<!--             >详情</el-button>-->
-             <el-button size="small" icon = "el-icon-date"
-               @click="showDialogEndTime(scope.row.id)"
-             >系统延期</el-button>
-           </el-button-group>
-
+            <el-dropdown split-button  @command="handleCommand">
+               <i class="el-icon-view"></i> 预览
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item :command="{command:'downFile',id:scope.row.id}"><i class="el-icon-download"></i> 出厂文件</el-dropdown-item>
+                <el-dropdown-item :command="{command:'showDialogAuth',id:scope.row.id}"><i class="el-icon-upload2"></i> 返厂授权</el-dropdown-item>
+                <el-dropdown-item :command="{command:'downFileVer',id:scope.row.id}"><i class="el-icon-download"></i> 校验文件</el-dropdown-item>
+                <el-dropdown-item :command="{command:'showDialogEndTime',id:scope.row.id}"><i class="el-icon-date"></i> 系统延期</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </template>
         </el-table-column>
     </el-table>
@@ -141,6 +133,9 @@ export default {
     this.fetchData()
   },
   methods: {
+    handleCommand(val) {
+      this[val.command](val.id)
+    },
     downFile(id) {
       const url = '/auth/downloadLicense/' + id
       window.open(url)
@@ -161,6 +156,13 @@ export default {
       this.previewShow = true
     },
     clickAuth() {
+      if(!this.authEndTime) {
+        this.$message({
+            message: '请选择时间',
+            type: 'error'
+          })
+          return
+      }
       request({
         url: '/auth/addAuthEndTime?authEndTime=' + this.authEndTime + '&id=' + this.formId ,
         method: 'post' ,
@@ -175,6 +177,13 @@ export default {
       })
     },
     clickPowerAuth(){
+      if(!this.powerStr) {
+          this.$message({
+            message: '请输入待校验文件',
+            type: 'error'
+          })
+          return
+      }
       request({
         url: '/auth/addAuthIpMAC?powerStr=' + this.powerStr + '&id=' + this.formId ,
         method: 'post' ,
@@ -203,3 +212,13 @@ export default {
   }
 }
 </script>
+<style>
+  .btn {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+  }
+  .dialog2 .el-dialog{
+    width: 500px;
+  }
+</style>
