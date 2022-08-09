@@ -102,8 +102,12 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           let that = this
-          let menus = JSON.stringify(this.$refs.tree.getCheckedNodes(false))
-          that.form.menus = menus
+          let parentMenus = this.$refs.tree.getHalfCheckedNodes()
+          let menus = this.$refs.tree.getCheckedNodes(false)
+          for(let j = 0 ; j < parentMenus.length ; j++){
+            menus.push(parentMenus[j])
+          }
+          that.form.menus = JSON.stringify(menus)
           request({
             url: '/auth/savePower',
             method: 'post',

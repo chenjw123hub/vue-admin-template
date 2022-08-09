@@ -185,8 +185,9 @@ export default {
           return
       }
       request({
-        url: '/auth/addAuthIpMAC?powerStr=' + this.powerStr + '&id=' + this.formId ,
+        url: '/auth/addAuthIpMAC/' + this.formId ,
         method: 'post' ,
+        data:this.powerStr
       }).then(response => {
         if(!response.flag){
           this.$message({
